@@ -1,11 +1,1 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* App-wide utility tweaks */
-html, body, #root {
-	height: 100%;
-}
-body {
-	@apply bg-gray-50 text-gray-800 antialiased;
-}
+@import "tailwindcss";

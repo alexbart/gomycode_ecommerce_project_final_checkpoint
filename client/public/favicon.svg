@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="MERN template icon">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#86f7c7"/>
+      <stop offset="100%" stop-color="#8cb7ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="#07101c"/>
+  <path d="M17 44V20h6.2l8.6 12.2L40.4 20H47v24h-6V30.8l-9.2 13h-.8l-9-13V44z" fill="url(#g)"/>
+</svg>

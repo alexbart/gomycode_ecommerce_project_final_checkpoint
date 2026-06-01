@@ -62,6 +62,14 @@ export interface Order {
   createdAt: string
 }
 
+export interface Wishlist {
+  _id: string
+  userId: string
+  products: string[]
+  createdAt: string
+  updatedAt: string
+}
+
 // Auth endpoints
 export const authAPI = {
   register: (email: string, password: string, firstName: string, lastName: string) =>

@@ -13,7 +13,26 @@ config()
 const app = express()
 const port = Number(process.env.PORT ?? 5000)
 
-app.use(cors())
+// CORS configuration
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'https://gomycode-ecommerce-project-final-ch.vercel.app',
+      'https://gomycode-ecommerce-project-final-ch-delta.vercel.app',
+    ]
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+}
+
+app.use(cors(corsOptions))
 app.use(express.json())
 
 app.get('/', (req, res) => {

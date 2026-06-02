@@ -154,6 +154,7 @@ router.get('/', async (req, res) => {
  *             schema:
  *               type: array
  *               items:
+<<<<<<< HEAD
  *                 type: object
  *                 properties:
  *                   name:
@@ -163,6 +164,9 @@ router.get('/', async (req, res) => {
  *                     type: integer
  *                   description:
  *                     type: string
+=======
+ *                 $ref: '#/components/schemas/Category'
+>>>>>>> main
  *       500:
  *         description: Server error
  *         content:
@@ -170,7 +174,11 @@ router.get('/', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
+<<<<<<< HEAD
 // Get all categories with product counts
+=======
+// Get all categories
+>>>>>>> main
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Product.aggregate([
@@ -199,11 +207,19 @@ router.get('/categories', async (req, res) => {
                   else: {
                     $cond: {
                       if: { $eq: ['$_id', 'mens'] },
+<<<<<<< HEAD
                       then: "Men's clothing and apparel",
                       else: {
                         $cond: {
                           if: { $eq: ['$_id', 'womens'] },
                           then: "Women's clothing and apparel",
+=======
+                      then: "Men's clothing",
+                      else: {
+                        $cond: {
+                          if: { $eq: ['$_id', 'womens'] },
+                          then: "Women's clothing",
+>>>>>>> main
                           else: 'Other products',
                         },
                       },
@@ -231,7 +247,11 @@ router.get('/categories', async (req, res) => {
  *     tags:
  *       - Products
  *     summary: Get a product by ID
+<<<<<<< HEAD
  *     description: Retrieve a specific product with all details including images
+=======
+ *     description: Retrieve a specific product by its ID
+>>>>>>> main
  *     parameters:
  *       - in: path
  *         name: id
@@ -283,17 +303,28 @@ router.get('/:id', async (req, res) => {
  *     tags:
  *       - Products
  *     summary: Search products
+<<<<<<< HEAD
  *     description: Search for products by name, description, or category (case-insensitive)
+=======
+ *     description: Search for products by name, description, or category
+>>>>>>> main
  *     parameters:
  *       - in: path
  *         name: query
  *         required: true
  *         schema:
  *           type: string
+<<<<<<< HEAD
  *         description: Search query string (e.g., "laptop", "shirt", "electronics")
  *     responses:
  *       200:
  *         description: Successfully retrieved search results (max 20 products)
+=======
+ *         description: Search query string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved search results
+>>>>>>> main
  *         content:
  *           application/json:
  *             schema:
@@ -334,12 +365,17 @@ router.get('/search/:query', async (req, res) => {
  *     tags:
  *       - Products
  *     summary: Create a new product
+<<<<<<< HEAD
  *     description: Create a new product entry. Admin authentication will be required in future versions.
+=======
+ *     description: Create a new product (currently open, admin authentication coming soon)
+>>>>>>> main
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
+<<<<<<< HEAD
  *             type: object
  *             required:
  *               - name
@@ -388,6 +424,9 @@ router.get('/search/:query', async (req, res) => {
  *                       type: string
  *                     hex:
  *                       type: string
+=======
+ *             $ref: '#/components/schemas/Product'
+>>>>>>> main
  *     responses:
  *       201:
  *         description: Product successfully created
@@ -396,7 +435,11 @@ router.get('/search/:query', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Product'
  *       400:
+<<<<<<< HEAD
  *         description: Invalid product data or missing required fields
+=======
+ *         description: Invalid product data
+>>>>>>> main
  *         content:
  *           application/json:
  *             schema:

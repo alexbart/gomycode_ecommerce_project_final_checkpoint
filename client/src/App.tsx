@@ -2,15 +2,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Navigation from './components/Navigation'
-import ProductsPage from './pages/ProductsPage'
-import ProductDetailPage from './pages/ProductDetailPage'
-import CartPage from './pages/CartPage'
-import WishlistPage from './pages/WishlistPage'
-import LoginPage from './pages/LoginPage'
-import RegisterPage from './pages/RegisterPage'
-import CheckoutPage from './pages/CheckoutPage'
-import AccountPage from './pages/AccountPage'
-import OrdersPage from './pages/OrdersPage'
+import { ProductsPage, ProductDetailPage, CartPage, WishlistPage, LoginPage, RegisterPage, CheckoutPage, AccountPage, OrdersPage } from './pages'
+
 
 function AppContent() {
   const { loading } = useAuth()

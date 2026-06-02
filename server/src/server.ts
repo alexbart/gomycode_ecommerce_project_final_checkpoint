@@ -1,7 +1,9 @@
 import cors from 'cors'
 import express from 'express'
 import { config } from 'dotenv'
+import swaggerUi from 'swagger-ui-express'
 import { dbConnect } from './db/db-connect.js'
+import { swaggerSpec } from './swagger.js'
 import authRoutes from './routes/auth.js'
 import productRoutes from './routes/products.js'
 import cartRoutes from './routes/cart.js'
@@ -35,9 +37,21 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(express.json())
 
+// Swagger documentation
+app.use('/api/docs', swaggerUi.serve)
+app.get('/api/docs', swaggerUi.setup(swaggerSpec, { 
+  swaggerOptions: {
+    url: '/api/swagger-spec.json'
+  }
+}))
+app.get('/api/swagger-spec.json', (req, res) => {
+  res.json(swaggerSpec)
+})
+
 app.get('/', (req, res) => {
   res.json({
     message: 'Ecommerce API is running',
+    docs: 'Visit /api/docs for API documentation',
   })
 })
 

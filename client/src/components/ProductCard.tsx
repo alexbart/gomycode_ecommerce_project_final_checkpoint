@@ -20,7 +20,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {product.category}
             </p>
             <div className="flex items-center justify-between mt-2">
-                <p className="text-lg font-semibold text-gray-900">${product.price}</p>
+                <p className="text-lg font-semibold text-gray-900">KES {(product.price * 130).toFixed(2)}</p>
                 {product.sustainable && (
                     <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
                         Sustainable

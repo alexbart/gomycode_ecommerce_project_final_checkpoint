@@ -46,7 +46,7 @@ export default function ProductsPage() {
                         <div className="mb-8">
                             <h3 className="text-sm font-semibold text-gray-900 mb-4">Category</h3>
                             <div className="space-y-2">
-                                {['all', 'shoes', 'apparel', 'accessories'].map((cat) => (
+                                {['all', 'electronics', 'jewelry', 'mens', 'womens'].map((cat) => (
                                     <label key={cat} className="flex items-center">
                                         <input
                                             type="radio"

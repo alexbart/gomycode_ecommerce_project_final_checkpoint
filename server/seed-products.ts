@@ -6,10 +6,10 @@ config()
 
 // Map Fake Store categories to our categories
 const categoryMap: Record<string, string> = {
-  electronics: 'accessories',
-  jewelery: 'accessories',
-  "men's clothing": 'apparel',
-  "women's clothing": 'apparel',
+  electronics: 'electronics',
+  jewelery: 'jewelry',
+  "men's clothing": 'mens',
+  "women's clothing": 'womens',
 }
 
 // Default sizes and colors for different categories
@@ -53,7 +53,7 @@ async function seedProducts() {
       sizes: defaultSizes['accessories'], // Default to accessories sizes
       colors: defaultColors,
       stock: Math.floor(Math.random() * 100) + 10, // Random stock between 10-110
-      category: categoryMap[product.category] || 'accessories',
+      category: categoryMap[product.category] || 'electronics',
       rating: product.rating.rate,
       reviews: product.rating.count,
       sustainable: true,

@@ -1,8 +1,16 @@
 import { Router, Response } from 'express'
 import { Product } from '../models/Product.js'
-import { AuthRequest, authMiddleware } from '../middleware/auth.js'
+import { ensureValidImages } from '../utils/imageUtils.js'
 
 const router = Router()
+
+// Middleware to normalize product images
+const normalizeProductImages = (product: any) => {
+  if (product && product.images) {
+    product.images = ensureValidImages(product.images)
+  }
+  return product
+}
 
 /**
  * @swagger
@@ -10,42 +18,45 @@ const router = Router()
  *   get:
  *     tags:
  *       - Products
- *     summary: Get all products
- *     description: Retrieve all products with optional filtering, sorting, and pagination
+ *     summary: Get all products with filtering and pagination
+ *     description: Retrieve products with optional filtering by category, sorting, and pagination
  *     parameters:
  *       - in: query
  *         name: category
  *         schema:
  *           type: string
  *           enum: [all, electronics, jewelry, mens, womens]
- *         description: Filter by category
+ *         description: Filter products by category
  *       - in: query
  *         name: sortBy
  *         schema:
  *           type: string
  *           enum: [price, rating, newest]
- *         description: Sort by field
+ *         description: Sort products by field
  *       - in: query
  *         name: order
  *         schema:
  *           type: string
  *           enum: [asc, desc]
- *         description: Sort order
+ *         description: Sort order (ascending or descending)
  *       - in: query
  *         name: page
  *         schema:
- *           type: number
+ *           type: integer
+ *           minimum: 1
  *           default: 1
  *         description: Page number for pagination
  *       - in: query
  *         name: limit
  *         schema:
- *           type: number
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
  *           default: 12
- *         description: Number of products per page
+ *         description: Number of products per page (max 100)
  *     responses:
  *       200:
- *         description: Successfully retrieved products
+ *         description: Successfully retrieved products with pagination
  *         content:
  *           application/json:
  *             schema:
@@ -56,11 +67,17 @@ const router = Router()
  *                   items:
  *                     $ref: '#/components/schemas/Product'
  *                 total:
- *                   type: number
+ *                   type: integer
+ *                   description: Total number of products matching the filter
  *                 page:
- *                   type: number
+ *                   type: integer
+ *                   description: Current page number
  *                 pages:
- *                   type: number
+ *                   type: integer
+ *                   description: Total number of pages
+ *                 limit:
+ *                   type: integer
+ *                   description: Number of products per page
  *       500:
  *         description: Server error
  *         content:
@@ -101,10 +118,17 @@ router.get('/', async (req, res) => {
     const products = await query.exec()
     const total = await Product.countDocuments(filter)
 
+    // Normalize images for all products
+    const normalizedProducts = products.map((product: any) => {
+      const obj = product.toObject ? product.toObject() : product
+      return normalizeProductImages(obj)
+    })
+
     res.json({
-      products,
+      products: normalizedProducts,
       total,
       page: Number(page),
+      limit: Number(limit),
       pages: Math.ceil(total / Number(limit)),
     })
   } catch (error) {
@@ -198,7 +222,7 @@ router.get('/categories', async (req, res) => {
  *     tags:
  *       - Products
  *     summary: Get a product by ID
- *     description: Retrieve a specific product by its ID
+ *     description: Retrieve a specific product with all details including images
  *     parameters:
  *       - in: path
  *         name: id
@@ -235,7 +259,8 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Product not found' })
     }
 
-    res.json(product)
+    const normalized = normalizeProductImages(product.toObject ? product.toObject() : product)
+    res.json(normalized)
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     res.status(500).json({ error: message })
@@ -300,7 +325,7 @@ router.get('/search/:query', async (req, res) => {
  *     tags:
  *       - Products
  *     summary: Create a new product
- *     description: Create a new product (currently open, admin authentication coming soon)
+ *     description: Create a new product
  *     requestBody:
  *       required: true
  *       content:
@@ -340,3 +365,4 @@ router.post('/', async (req, res) => {
 })
 
 export default router
+

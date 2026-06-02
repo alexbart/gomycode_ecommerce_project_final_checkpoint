@@ -8,6 +8,64 @@ import { AuthRequest, authMiddleware } from '../middleware/auth.js'
 
 const router = Router()
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Register a new user
+ *     description: Create a new user account
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *             required:
+ *               - email
+ *               - password
+ *               - firstName
+ *               - lastName
+ *     responses:
+ *       201:
+ *         description: User successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *       400:
+ *         description: Missing required fields
+ *       409:
+ *         description: Email already in use
+ *       500:
+ *         description: Server error
+ */
 // Register
 router.post('/register', async (req, res) => {
   try {
@@ -65,6 +123,58 @@ router.post('/register', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     tags:
+ *       - Authentication
+ *     summary: Login user
+ *     description: Login with email and password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *             required:
+ *               - email
+ *               - password
+ *     responses:
+ *       200:
+ *         description: User successfully logged in
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 token:
+ *                   type: string
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *       400:
+ *         description: Email and password required
+ *       401:
+ *         description: Invalid email or password
+ *       500:
+ *         description: Server error
+ */
 // Login
 router.post('/login', async (req, res) => {
   try {
@@ -104,6 +214,65 @@ router.post('/login', async (req, res) => {
   }
 })
 
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     tags:
+ *       - Authentication
+ *     summary: Get current user profile
+ *     description: Retrieve the logged-in user's profile information
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved user profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ *   put:
+ *     tags:
+ *       - Authentication
+ *     summary: Update user profile
+ *     description: Update the logged-in user's profile information
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User profile successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthorized - Missing or invalid token
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
 // Get current user
 router.get('/me', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {

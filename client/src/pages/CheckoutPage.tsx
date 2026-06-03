@@ -76,7 +76,7 @@ export default function CheckoutPage() {
                                 />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900 mb-2">
                                         City
@@ -92,7 +92,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900 mb-2">
-                                        State
+                                        County
                                     </label>
                                     <input
                                         type="text"
@@ -101,14 +101,15 @@ export default function CheckoutPage() {
                                         onChange={handleChange}
                                         required
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                        placeholder="e.g. Nairobi"
                                     />
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-900 mb-2">
-                                        Zip Code
+                                        P.O. Box / Postal Code
                                     </label>
                                     <input
                                         type="text"
@@ -117,6 +118,7 @@ export default function CheckoutPage() {
                                         onChange={handleChange}
                                         required
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                        placeholder="e.g. 00100"
                                     />
                                 </div>
                                 <div>
@@ -153,7 +155,7 @@ export default function CheckoutPage() {
                         <div className="space-y-3 mb-6">
                             <div className="flex justify-between text-gray-700">
                                 <span>Subtotal:</span>
-                                <span>$0.00</span>
+                                <span>KES 0.00</span>
                             </div>
                             <div className="flex justify-between text-gray-700">
                                 <span>Shipping:</span>
@@ -161,12 +163,12 @@ export default function CheckoutPage() {
                             </div>
                             <div className="flex justify-between text-gray-700">
                                 <span>Tax:</span>
-                                <span>$0.00</span>
+                                <span>KES 0.00</span>
                             </div>
                             <div className="border-t border-gray-200 pt-3">
                                 <div className="flex justify-between font-semibold text-gray-900 text-lg">
                                     <span>Total:</span>
-                                    <span>$0.00</span>
+                                    <span>KES 0.00</span>
                                 </div>
                             </div>
                         </div>

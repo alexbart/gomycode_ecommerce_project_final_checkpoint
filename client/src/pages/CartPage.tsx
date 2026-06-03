@@ -76,7 +76,7 @@ export default function CartPage() {
                                 {cart.items.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex gap-4 border border-gray-200 rounded-lg p-4"
+                                        className="flex flex-col sm:flex-row gap-4 border border-gray-200 rounded-lg p-4"
                                     >
                                         {item.productId && typeof item.productId === 'object' && 'images' in item.productId && (
                                             <div className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
@@ -101,7 +101,7 @@ export default function CartPage() {
                                                 <p className="text-sm text-gray-500">Color: {item.color}</p>
                                             )}
                                             <p className="text-sm font-semibold text-gray-900 mt-2">
-                                                ${item.price}
+                                                KES {(item.price * 130).toFixed(2)}
                                             </p>
                                         </div>
 
@@ -147,8 +147,8 @@ export default function CartPage() {
                             <div className="space-y-3 mb-6">
                                 <div className="flex justify-between text-gray-700">
                                     <span>Subtotal:</span>
-                                    <span>${cart.totalPrice.toFixed(2)}</span>
-                                </div>
+                                <span>KES {(cart.totalPrice * 130).toFixed(2)}</span>
+                            </div>
                                 <div className="flex justify-between text-gray-700">
                                     <span>Shipping:</span>
                                     <span>Free</span>
@@ -156,7 +156,7 @@ export default function CartPage() {
                                 <div className="border-t border-gray-200 pt-3">
                                     <div className="flex justify-between font-semibold text-gray-900">
                                         <span>Total:</span>
-                                        <span>${cart.totalPrice.toFixed(2)}</span>
+                                        <span>KES {(cart.totalPrice * 130).toFixed(2)}</span>
                                     </div>
                                 </div>
                             </div>

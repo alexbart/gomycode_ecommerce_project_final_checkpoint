@@ -52,7 +52,7 @@ export default function OrdersPage() {
                                 key={order._id}
                                 className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
                             >
-                                <div className="grid grid-cols-4 gap-4 items-center">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-center">
                                     <div>
                                         <p className="text-sm text-gray-500">Order ID</p>
                                         <p className="font-semibold text-gray-900">
@@ -70,7 +70,7 @@ export default function OrdersPage() {
                                     <div>
                                         <p className="text-sm text-gray-500">Total</p>
                                         <p className="font-semibold text-gray-900">
-                                            ${order.totalPrice.toFixed(2)}
+                                            KES {(order.totalPrice * 130).toFixed(2)}
                                         </p>
                                     </div>
 

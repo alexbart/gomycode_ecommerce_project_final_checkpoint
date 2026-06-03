@@ -3,6 +3,25 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { Product, productsAPI, cartAPI } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
 
+function Toast({ message, visible, onClose }: { message: string; visible: boolean; onClose: () => void }) {
+    if (!visible) return null
+    return (
+        <div className="fixed bottom-4 right-4 z-50 animate-slide-up">
+            <div className="bg-gray-900 text-white px-5 py-3 rounded-lg shadow-lg flex items-center gap-3">
+                <svg className="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <span className="text-sm font-medium">{message}</span>
+                <button onClick={onClose} className="ml-2 text-gray-400 hover:text-white">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    )
+}
+
 export default function ProductDetailPage() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
@@ -13,6 +32,7 @@ export default function ProductDetailPage() {
     const [selectedColor, setSelectedColor] = useState('')
     const [loading, setLoading] = useState(true)
     const [adding, setAdding] = useState(false)
+    const [toast, setToast] = useState<{ visible: boolean; message: string }>({ visible: false, message: '' })
 
     useEffect(() => {
         if (id) {
@@ -33,17 +53,26 @@ export default function ProductDetailPage() {
         setAdding(true)
         try {
             await cartAPI.add(id!, quantity, selectedSize, selectedColor)
-            alert('Added to cart!')
+            setToast({ visible: true, message: 'Added to cart successfully!' })
             setQuantity(1)
             setSelectedSize('')
             setSelectedColor('')
         } catch (error) {
             console.error(error)
-            alert('Failed to add to cart')
+            setToast({ visible: true, message: 'Failed to add to cart' })
         } finally {
             setAdding(false)
         }
     }
+
+    const dismissToast = () => setToast((prev) => ({ ...prev, visible: false }))
+
+    useEffect(() => {
+        if (toast.visible) {
+            const timer = setTimeout(dismissToast, 3000)
+            return () => clearTimeout(timer)
+        }
+    }, [toast.visible])
 
     if (loading) {
         return (
@@ -81,7 +110,7 @@ export default function ProductDetailPage() {
                                 className="w-full h-full object-cover"
                             />
                         </div>
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-4">
                             {product.images.map((image, idx) => (
                                 <div
                                     key={idx}
@@ -115,8 +144,8 @@ export default function ProductDetailPage() {
                             </div>
                         )}
 
-                        <p className="text-3xl font-bold text-gray-900 mb-6">
-                            ${product.price}
+                        <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
+                            KES {(product.price * 130).toFixed(2)}
                         </p>
 
                         <p className="text-gray-600 mb-6">
@@ -205,6 +234,7 @@ export default function ProductDetailPage() {
                         >
                             {adding ? 'Adding...' : product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
                         </button>
+                        <Toast message={toast.message} visible={toast.visible} onClose={dismissToast} />
                     </div>
                 </div>
             </div>

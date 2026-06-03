@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { User } from '../api/endpoints'
-import { authAPI } from '../api/endpoints'
+import { User, Cart } from '../api/endpoints'
+import { authAPI, cartAPI } from '../api/endpoints'
 
 interface AuthContextType {
     user: User | null
     token: string | null
     loading: boolean
+    cartCount: number
+    refreshCart: () => Promise<void>
     login: (email: string, password: string) => Promise<void>
     register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>
     logout: () => void
@@ -18,19 +20,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
     const [token, setToken] = useState<string | null>(localStorage.getItem('token'))
     const [loading, setLoading] = useState(true)
+    const [cartCount, setCartCount] = useState(0)
 
-    // Check if user is logged in on mount
+    const refreshCart = async () => {
+        if (!token) return
+        try {
+            const res = await cartAPI.get()
+            const cart = res.data as Cart
+            setCartCount(cart.items.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0))
+        } catch {
+            setCartCount(0)
+        }
+    }
+
     useEffect(() => {
         if (token) {
             authAPI
                 .getMe()
-                .then((res) => setUser(res.data))
+                .then(() => refreshCart())
                 .catch(() => {
                     localStorage.removeItem('token')
                     setToken(null)
                 })
                 .finally(() => setLoading(false))
         } else {
+            setCartCount(0)
             setLoading(false)
         }
     }, [token])
@@ -52,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const logout = () => {
         setUser(null)
         setToken(null)
+        setCartCount(0)
         localStorage.removeItem('token')
     }
 
@@ -61,6 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 user,
                 token,
                 loading,
+                cartCount,
+                refreshCart,
                 login,
                 register,
                 logout,

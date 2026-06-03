@@ -25,7 +25,7 @@ function Toast({ message, visible, onClose }: { message: string; visible: boolea
 export default function ProductDetailPage() {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, refreshCart } = useAuth()
     const [product, setProduct] = useState<Product | null>(null)
     const [quantity, setQuantity] = useState(1)
     const [selectedSize, setSelectedSize] = useState('')
@@ -54,6 +54,7 @@ export default function ProductDetailPage() {
         try {
             await cartAPI.add(id!, quantity, selectedSize, selectedColor)
             setToast({ visible: true, message: 'Added to cart successfully!' })
+            refreshCart()
             setQuantity(1)
             setSelectedSize('')
             setSelectedColor('')

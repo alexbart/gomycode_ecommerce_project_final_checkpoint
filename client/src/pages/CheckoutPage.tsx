@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ordersAPI } from '../api/endpoints'
+import { Cart, ordersAPI, cartAPI } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
 
 export default function CheckoutPage() {
@@ -15,11 +15,20 @@ export default function CheckoutPage() {
     })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [cart, setCart] = useState<Cart | null>(null)
+    const [cartLoading, setCartLoading] = useState(true)
 
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login')
+            return
         }
+
+        cartAPI
+            .get()
+            .then((res) => setCart(res.data))
+            .catch(console.error)
+            .finally(() => setCartLoading(false))
     }, [isAuthenticated, navigate])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,26 +161,30 @@ export default function CheckoutPage() {
                             Order Summary
                         </h2>
 
-                        <div className="space-y-3 mb-6">
-                            <div className="flex justify-between text-gray-700">
-                                <span>Subtotal:</span>
-                                <span>KES 0.00</span>
-                            </div>
-                            <div className="flex justify-between text-gray-700">
-                                <span>Shipping:</span>
-                                <span className="text-green-600 font-semibold">Free</span>
-                            </div>
-                            <div className="flex justify-between text-gray-700">
-                                <span>Tax:</span>
-                                <span>KES 0.00</span>
-                            </div>
-                            <div className="border-t border-gray-200 pt-3">
-                                <div className="flex justify-between font-semibold text-gray-900 text-lg">
-                                    <span>Total:</span>
-                                    <span>KES 0.00</span>
+                        {cartLoading ? (
+                            <p className="text-gray-500 text-sm">Loading order summary...</p>
+                        ) : cart && cart.items.length > 0 ? (
+                            <>
+                                <div className="space-y-3 mb-6">
+                                    <div className="flex justify-between text-gray-700">
+                                        <span>Subtotal ({cart.items.reduce((sum: number, i: any) => sum + i.quantity, 0)} items):</span>
+                                        <span>KES {(cart.totalPrice * 130).toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-gray-700">
+                                        <span>Shipping:</span>
+                                        <span className="text-green-600 font-semibold">Free</span>
+                                    </div>
+                                    <div className="border-t border-gray-200 pt-3">
+                                        <div className="flex justify-between font-semibold text-gray-900 text-lg">
+                                            <span>Total:</span>
+                                            <span>KES {(cart.totalPrice * 130).toFixed(2)}</span>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            </>
+                        ) : (
+                            <p className="text-gray-500 text-sm">No items in cart</p>
+                        )}
 
                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                             <p className="text-sm text-blue-800">

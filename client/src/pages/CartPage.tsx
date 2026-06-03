@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 
 export default function CartPage() {
     const navigate = useNavigate()
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, refreshCart } = useAuth()
     const [cart, setCart] = useState<Cart | null>(null)
     const [loading, setLoading] = useState(true)
 
@@ -26,6 +26,7 @@ export default function CartPage() {
         try {
             const res = await cartAPI.remove(itemId)
             setCart(res.data)
+            refreshCart()
         } catch (error) {
             console.error(error)
         }
@@ -40,6 +41,7 @@ export default function CartPage() {
         try {
             const res = await cartAPI.update(itemId, quantity)
             setCart(res.data)
+            refreshCart()
         } catch (error) {
             console.error(error)
         }

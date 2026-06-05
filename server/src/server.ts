@@ -21,7 +21,7 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5173',
-      process.env.CLIENT_API_URL
+      process.env.CLIENT_APP_URL
     ]
     
     if (!origin || allowedOrigins.includes(origin)) {

@@ -21,8 +21,7 @@ const corsOptions = {
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:5173',
-      'https://gomycode-ecommerce-project-final-ch.vercel.app',
-      'https://gomycode-ecommerce-project-final-ch-delta.vercel.app',
+      process.env.CLIENT_API_URL
     ]
     
     if (!origin || allowedOrigins.includes(origin)) {

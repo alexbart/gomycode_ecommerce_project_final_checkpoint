@@ -20,10 +20,12 @@ export function authMiddleware(
 
   try {
     const secret = process.env.JWT_SECRET || 'your-secret-key'
-    const decoded = jwt.verify(token, secret) as { userId: string; role: string; vendorId?: string }
+    const decoded = jwt.verify(token, secret) as { userId: string; role?: string; vendorId?: string }
     req.userId = decoded.userId
-    req.role = decoded.role
+    // Narrow role to the allowed union so TypeScript passes strict builds.
+    req.role = (decoded.role as 'customer' | 'vendor' | 'super-admin' | undefined)
     req.vendorId = decoded.vendorId
+
     next()
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' })

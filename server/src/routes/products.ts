@@ -90,7 +90,7 @@ router.get('/', async (req, res) => {
   try {
     const { category, sortBy, order, page = 1, limit = 12 } = req.query
 
-    const filter: Record<string, any> = {}
+    const filter: Record<string, any> = { isApproved: true }
 
     if (category && category !== 'all') {
       filter.category = category
@@ -352,7 +352,7 @@ router.get('/search/:query', async (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-// Create product (admin only - for now no auth check)
+// Create product (vendor or super-admin only - admin routes handle this)
 router.post('/', async (req, res) => {
   try {
     const product = new Product(req.body)

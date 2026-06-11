@@ -102,9 +102,13 @@ router.post('/register', async (req, res) => {
     await cart.save()
     await wishlist.save()
 
-    // Generate token
+    // Generate token with role and vendorId
     const secret = process.env.JWT_SECRET || 'your-secret-key'
-    const token = jwt.sign({ userId: user._id.toString() }, secret, {
+    const token = jwt.sign({ 
+      userId: user._id.toString(), 
+      role: user.role,
+      vendorId: user.vendorId?.toString()
+    }, secret, {
       expiresIn: '30d',
     })
 
@@ -115,6 +119,7 @@ router.post('/register', async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        role: user.role,
       },
     })
   } catch (error) {
@@ -195,7 +200,11 @@ router.post('/login', async (req, res) => {
     }
 
     const secret = process.env.JWT_SECRET || 'your-secret-key'
-    const token = jwt.sign({ userId: user._id.toString() }, secret, {
+    const token = jwt.sign({ 
+      userId: user._id.toString(), 
+      role: user.role,
+      vendorId: user.vendorId?.toString()
+    }, secret, {
       expiresIn: '30d',
     })
 
@@ -206,6 +215,7 @@ router.post('/login', async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        role: user.role,
       },
     })
   } catch (error) {

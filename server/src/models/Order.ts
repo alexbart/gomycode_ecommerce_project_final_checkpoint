@@ -6,6 +6,7 @@ export interface IOrderItem {
   size?: string
   color?: string
   price: number
+  vendorId?: mongoose.Types.ObjectId
 }
 
 export interface IOrder extends Document {
@@ -43,8 +44,12 @@ const orderItemSchema = new Schema<IOrderItem>(
       required: true,
       min: 0,
     },
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Vendor',
+    },
   },
-  { _id: false }
+  { _id: true }
 )
 
 const orderSchema = new Schema<IOrder>(

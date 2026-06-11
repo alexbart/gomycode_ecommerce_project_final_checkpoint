@@ -13,6 +13,11 @@ export interface IUser extends Document {
     zipCode: string
     country: string
   }
+  role: 'customer' | 'vendor' | 'super-admin'
+  vendorId?: mongoose.Types.ObjectId
+  storeName?: string
+  storeDescription?: string
+  isActive?: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -52,6 +57,27 @@ const userSchema = new Schema<IUser>(
       state: String,
       zipCode: String,
       country: String,
+    },
+    role: {
+      type: String,
+      enum: ['customer', 'vendor', 'super-admin'],
+      default: 'customer',
+    },
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Vendor',
+    },
+    storeName: {
+      type: String,
+      trim: true,
+    },
+    storeDescription: {
+      type: String,
+      trim: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   { timestamps: true }

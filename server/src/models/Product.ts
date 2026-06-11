@@ -15,6 +15,8 @@ export interface IProduct extends Document {
   rating: number
   reviews: number
   sustainable: boolean
+  vendorId?: mongoose.Types.ObjectId
+  isApproved: boolean
   createdAt: Date
   updatedAt: Date
 }
@@ -75,6 +77,14 @@ const productSchema = new Schema<IProduct>(
       min: 0,
     },
     sustainable: {
+      type: Boolean,
+      default: true,
+    },
+    vendorId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Vendor',
+    },
+    isApproved: {
       type: Boolean,
       default: true,
     },

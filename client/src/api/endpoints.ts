@@ -28,6 +28,8 @@ export interface User {
     zipCode: string
     country: string
   }
+  role?: 'customer' | 'vendor' | 'super-admin'
+  vendorId?: string
 }
 
 export interface CartItem {
@@ -37,6 +39,7 @@ export interface CartItem {
   size?: string
   color?: string
   price: number
+  vendorId?: string
 }
 
 export interface Cart {
@@ -111,11 +114,19 @@ export const wishlistAPI = {
     apiClient.get(`/wishlist/check/${productId}`),
 }
 
+export interface ShippingAddress {
+  street: string
+  city: string
+  state: string
+  zipCode: string
+  country: string
+}
+
 // Orders endpoints
 export const ordersAPI = {
   getAll: () => apiClient.get('/orders'),
   getById: (id: string) => apiClient.get(`/orders/${id}`),
-  create: (shippingAddress: any) =>
+  create: (shippingAddress: ShippingAddress) =>
     apiClient.post('/orders', { shippingAddress }),
   cancel: (id: string) => apiClient.put(`/orders/${id}/cancel`, {}),
 }

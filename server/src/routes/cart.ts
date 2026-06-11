@@ -33,8 +33,8 @@ router.post('/add', authMiddleware, async (req: AuthRequest, res: Response) => {
     }
 
     const product = await Product.findById(productId)
-    if (!product) {
-      return res.status(404).json({ error: 'Product not found' })
+    if (!product || !product.isApproved) {
+      return res.status(404).json({ error: 'Product not found or not available' })
     }
 
     let cart = await Cart.findOne({ userId: req.userId })
@@ -59,6 +59,7 @@ router.post('/add', authMiddleware, async (req: AuthRequest, res: Response) => {
         size,
         color,
         price: product.price,
+        vendorId: product.vendorId,
       })
     }
 

@@ -1,8 +1,11 @@
 {
   "rewrites": [
-    { "source": "/admin", "destination": "/" },
-    { "source": "/admin/(.*)", "destination": "/" }
+    {
+      "source": "/(?!api)(?!_next)(?!.*\\.\\w+$).*$",
+      "destination": "/"
+    }
   ]
 }
+
 
 

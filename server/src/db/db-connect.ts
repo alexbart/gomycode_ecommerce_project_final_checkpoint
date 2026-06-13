@@ -4,8 +4,7 @@ export async function dbConnect() {
   const mongoUri = process.env.MONGODB_URI
 
   if (!mongoUri) {
-    console.warn('MONGODB_URI is not set; database connection skipped.')
-    return
+    throw new Error('MONGODB_URI is not set')
   }
 
   try {
@@ -14,5 +13,6 @@ export async function dbConnect() {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     console.error(`Database connection error: ${message}`)
+    throw error
   }
 }

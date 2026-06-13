@@ -2,6 +2,8 @@ import cors from 'cors'
 import express from 'express'
 import { config } from 'dotenv'
 import swaggerUi from 'swagger-ui-express'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { dbConnect } from './db/db-connect.js'
 import { swaggerSpec } from './swagger.js'
 import authRoutes from './routes/auth.js'
@@ -10,6 +12,10 @@ import cartRoutes from './routes/cart.js'
 import wishlistRoutes from './routes/wishlist.js'
 import orderRoutes from './routes/orders.js'
 import adminRoutes from './routes/admin.js'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const clientPath = path.resolve(__dirname, '../../client/dist')
 
 config()
 
@@ -21,7 +27,9 @@ const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     const allowedOrigins = [
       'http://localhost:3000',
+      'http://localhost:5000',
       'http://localhost:5173',
+      'http://localhost:5176',
       process.env.CLIENT_APP_URL
     ]
     
@@ -61,6 +69,15 @@ app.get('/health', (req, res) => {
     port,
   })
 })
+
+app.use(express.static(clientPath))
+
+// SPA fallback (must be registered after API routes)
+// Use an explicit regex route to avoid path-to-regexp errors with '*' on newer Express versions.
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(clientPath, 'index.html'))
+})
+
 
 // Routes
 app.use('/api/auth', authRoutes)

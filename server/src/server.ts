@@ -70,13 +70,26 @@ app.get('/health', (req, res) => {
   })
 })
 
-app.use(express.static(clientPath))
+// Only serve the SPA if the client build exists.
+// This prevents server-only Vercel deployments from crashing while trying to serve /client/dist.
+const indexHtmlPath = path.join(clientPath, 'index.html')
 
-// SPA fallback (must be registered after API routes)
-// Use an explicit regex route to avoid path-to-regexp errors with '*' on newer Express versions.
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(clientPath, 'index.html'))
-})
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const fs = require('fs') as typeof import('fs')
+  if (fs.existsSync(indexHtmlPath)) {
+    app.use(express.static(clientPath))
+
+    // SPA fallback (must be registered after API routes)
+    // Use an explicit regex route to avoid path-to-regexp errors with '*' on newer Express versions.
+    app.get(/.*/, (req, res) => {
+      res.sendFile(indexHtmlPath)
+    })
+  }
+} catch {
+  // If filesystem checks fail (e.g., different runtime), don't break API routes.
+}
+
 
 
 // Routes

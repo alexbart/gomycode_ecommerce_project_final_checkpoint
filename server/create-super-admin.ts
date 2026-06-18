@@ -1,4 +1,6 @@
-import mongoose from 'mongoose'
+import { config } from 'dotenv'
+config()
+
 import bcrypt from 'bcryptjs'
 import { User } from './src/models/User.js'
 import { Vendor } from './src/models/Vendor.js'

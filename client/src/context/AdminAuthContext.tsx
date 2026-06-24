@@ -27,6 +27,15 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(localStorage.getItem('adminToken'))
   const [loading, setLoading] = useState(true)
 
+  // Ensure the admin token is attached as soon as the provider mounts.
+  useEffect(() => {
+    if (token) {
+      adminApiClient.defaults.headers.common.Authorization = `Bearer ${token}`
+    } else {
+      delete adminApiClient.defaults.headers.common.Authorization
+    }
+  }, [token])
+
   const loadUser = useCallback(() => {
     if (token) {
       adminApiClient
@@ -38,12 +47,14 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
           } else {
             localStorage.removeItem('adminToken')
             setToken(null)
+            delete adminApiClient.defaults.headers.common.Authorization
           }
         })
         .catch(() => {
           localStorage.removeItem('adminToken')
           setToken(null)
           setUser(null)
+          delete adminApiClient.defaults.headers.common.Authorization
         })
         .finally(() => setLoading(false))
     } else {

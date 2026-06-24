@@ -19,7 +19,10 @@ export function authMiddleware(
   }
 
   try {
-    const secret = process.env.JWT_SECRET || 'your-secret-key'
+    if (!process.env.JWT_SECRET) {
+      return res.status(401).json({ error: 'JWT_SECRET not configured on server' })
+    }
+    const secret = process.env.JWT_SECRET
     const decoded = jwt.verify(token, secret) as { userId: string; role?: string; vendorId?: string }
     req.userId = decoded.userId
     // Narrow role to the allowed union so TypeScript passes strict builds.

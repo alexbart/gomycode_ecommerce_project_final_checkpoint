@@ -12,6 +12,7 @@ import cartRoutes from './routes/cart.js'
 import wishlistRoutes from './routes/wishlist.js'
 import orderRoutes from './routes/orders.js'
 import adminRoutes from './routes/admin.js'
+import { authMiddleware } from './middleware/auth.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -30,7 +31,7 @@ const corsOptions = {
       'http://localhost:5000',
       'http://localhost:5173',
       'http://localhost:5176',
-      process.env.CLIENT_APP_URL
+      process.env.CLIENT_APP_URL,
     ]
     
     if (!origin || allowedOrigins.includes(origin)) {
@@ -98,7 +99,7 @@ app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/orders', orderRoutes)
-app.use('/api/admin', adminRoutes)
+app.use('/api/admin', authMiddleware, adminRoutes)
 
 async function bootstrap() {
   await dbConnect()

@@ -12,6 +12,18 @@ interface Stats {
   totalRevenue?: number
 }
 
+function formatKES(amount: number) {
+  try {
+    return new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `KES ${amount}`
+  }
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
@@ -44,7 +56,7 @@ export default function DashboardPage() {
             <StatsCard title="Total Users" value={stats?.totalUsers || 0} />
             <StatsCard
               title="Total Revenue"
-              value={`$${(stats?.totalRevenue || 0).toFixed(2)}`}
+              value={formatKES(stats?.totalRevenue || 0)}
               className="md:col-span-4"
             />
           </>
@@ -54,7 +66,7 @@ export default function DashboardPage() {
             <StatsCard title="My Orders" value={stats?.myOrders || 0} />
             <StatsCard
               title="Revenue"
-              value={`$${(stats?.totalRevenue || 0).toFixed(2)}`}
+              value={formatKES(stats?.totalRevenue || 0)}
               className="md:col-span-2"
             />
           </>

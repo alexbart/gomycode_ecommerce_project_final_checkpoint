@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react'
 import { adminAPI, AdminOrder } from '../../api/admin'
 
+function formatKES(amount: number) {
+  try {
+    return new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `KES ${amount}`
+  }
+}
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([])
   const [loading, setLoading] = useState(true)
@@ -49,7 +61,7 @@ export default function AdminOrdersPage() {
             {orders.map((order) => (
               <tr key={order._id}>
                 <td className="px-4 py-3 font-mono text-sm">#{order._id.slice(-6)}</td>
-                <td className="px-4 py-3">${order.totalPrice.toFixed(2)}</td>
+                <td className="px-4 py-3">{formatKES(order.totalPrice)}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(order.status)}`}>
                     {order.status}

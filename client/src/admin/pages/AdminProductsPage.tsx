@@ -1,6 +1,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { adminAPI, AdminProduct } from '../../api/admin'
 
+function formatKES(amount: number) {
+  try {
+    return new Intl.NumberFormat('en-KE', {
+      style: 'currency',
+      currency: 'KES',
+      maximumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return `KES ${amount}`
+  }
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<AdminProduct[]>([])
   const [loading, setLoading] = useState(true)
@@ -130,7 +142,7 @@ export default function AdminProductsPage() {
             {products.map((product) => (
               <tr key={product._id}>
                 <td className="px-4 py-3">{product.name}</td>
-                <td className="px-4 py-3">${product.price}</td>
+                <td className="px-4 py-3">{formatKES(product.price)}</td>
                 <td className="px-4 py-3">{product.stock}</td>
                 <td className="px-4 py-3">
                   <span

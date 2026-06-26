@@ -5,6 +5,8 @@ import crypto from 'crypto'
 import { Cart } from '../models/Cart.js'
 import { Order } from '../models/Order.js'
 import { AuthRequest, authMiddleware } from '../middleware/auth.js'
+import { User } from '../models/User.js'
+
 
 const router = Router()
 
@@ -91,13 +93,16 @@ router.post(
 
       await order.save()
 
+      const user = await User.findById(req.userId).select('email')
+      if (!user?.email) {
+        return res.status(400).json({ error: 'User email not found' })
+      }
+
       const payload = {
-        // Paystack requires an email field.
-        // Get user email from JWT-protected payload (we only have userId in token),
-        // so we must fetch it from DB.
-        // NOTE: if you later add email into JWT, you can remove this DB lookup.
+        email: user.email,
         amount: amountKES,
         reference,
+
 
         // 'callback_url' can be used but we rely on webhook. Still set to keep user flow.
         callback_url: process.env.PAYSTACK_CALLBACK_URL ?? undefined,

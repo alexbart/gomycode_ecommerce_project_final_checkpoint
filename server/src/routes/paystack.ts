@@ -1,6 +1,7 @@
 import { Router, Response } from 'express'
 import crypto from 'crypto'
-import axios from 'axios'
+// axios is not used to avoid dependency on build systems.
+// We'll use fetch (Node 18+).
 import { Cart } from '../models/Cart.js'
 import { Order } from '../models/Order.js'
 import { AuthRequest, authMiddleware } from '../middleware/auth.js'
@@ -103,17 +104,22 @@ router.post(
         },
       }
 
-      const { data } = await axios.post(
-        'https://api.paystack.co/transaction/initialize',
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${secretKey}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const response = await fetch('https://api.paystack.co/transaction/initialize', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
 
+      const data = await response.json()
+
+      if (!data?.data) {
+        return res.status(502).json({ error: 'Paystack initialize failed' })
+      }
+
+      // `data.data.authorization_url` and `data.data.reference` are expected
       if (!data?.data?.authorization_url || !data?.data?.reference) {
         return res.status(502).json({ error: 'Paystack initialize failed' })
       }

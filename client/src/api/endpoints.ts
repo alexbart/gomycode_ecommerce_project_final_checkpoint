@@ -130,3 +130,10 @@ export const ordersAPI = {
     apiClient.post('/orders', { shippingAddress }),
   cancel: (id: string) => apiClient.put(`/orders/${id}/cancel`, {}),
 }
+
+// Paystack endpoints
+export const paystackAPI = {
+  initialize: (shippingAddress: ShippingAddress) =>
+    apiClient.post('/paystack/initialize', { shippingAddress }),
+}
+

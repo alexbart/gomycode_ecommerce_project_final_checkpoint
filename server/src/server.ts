@@ -12,7 +12,9 @@ import cartRoutes from './routes/cart.js'
 import wishlistRoutes from './routes/wishlist.js'
 import orderRoutes from './routes/orders.js'
 import adminRoutes from './routes/admin.js'
+import paystackRoutes from './routes/paystack.js'
 import { authMiddleware } from './middleware/auth.js'
+
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -99,7 +101,9 @@ app.use('/api/products', productRoutes)
 app.use('/api/cart', cartRoutes)
 app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/paystack', paystackRoutes)
 app.use('/api/admin', authMiddleware, adminRoutes)
+
 
 async function bootstrap() {
   await dbConnect()

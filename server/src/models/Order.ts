@@ -14,6 +14,7 @@ export interface IOrder extends Document {
   items: IOrderItem[]
   totalPrice: number
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  paymentReference?: string
   shippingAddress: {
     street: string
     city: string

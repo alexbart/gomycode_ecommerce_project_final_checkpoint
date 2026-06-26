@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Cart, ordersAPI, cartAPI } from '../api/endpoints'
+import { Cart, cartAPI, paystackAPI } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
 
 export default function CheckoutPage() {
@@ -42,8 +42,9 @@ export default function CheckoutPage() {
         setLoading(true)
 
         try {
-            await ordersAPI.create(formData)
-            navigate('/account/orders')
+            // Start Paystack payment flow
+            const initRes = await paystackAPI.initialize(formData)
+            window.location.href = initRes.data.authorization_url
         } catch (err) {
             const message = err instanceof Error ? err.message : 'Checkout failed'
             setError(message)

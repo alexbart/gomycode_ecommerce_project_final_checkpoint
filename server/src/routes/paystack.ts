@@ -106,6 +106,8 @@ router.post(
 
       const response = await fetch('https://api.paystack.co/transaction/initialize', {
         method: 'POST',
+        // Paystack expects JSON. 
+
         headers: {
           Authorization: `Bearer ${secretKey}`,
           'Content-Type': 'application/json',
@@ -115,13 +117,27 @@ router.post(
 
       const data = await response.json()
 
+      if (!response.ok) {
+        // Surface Paystack error details to quickly diagnose secret keys / payload issues.
+        console.error('Paystack initialize failed:', {
+          httpStatus: response.status,
+          body: data,
+        })
+        return res.status(502).json({
+          error: 'Paystack initialize failed',
+          paystack: data,
+        })
+      }
+
       if (!data?.data) {
-        return res.status(502).json({ error: 'Paystack initialize failed' })
+        console.error('Paystack initialize unexpected payload:', data)
+        return res.status(502).json({ error: 'Paystack initialize failed', paystack: data })
       }
 
       // `data.data.authorization_url` and `data.data.reference` are expected
       if (!data?.data?.authorization_url || !data?.data?.reference) {
-        return res.status(502).json({ error: 'Paystack initialize failed' })
+        console.error('Paystack initialize missing expected fields:', data?.data)
+        return res.status(502).json({ error: 'Paystack initialize failed', paystack: data })
       }
 
       // Fallback option: if Paystack behaves abnormally and you need immediate order placement,

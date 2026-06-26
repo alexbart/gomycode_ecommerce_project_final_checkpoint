@@ -92,9 +92,13 @@ router.post(
       await order.save()
 
       const payload = {
-        email: req.body.email, // optional; front-end could provide user email. If missing, Paystack may still accept.
+        // Paystack requires an email field.
+        // Get user email from JWT-protected payload (we only have userId in token),
+        // so we must fetch it from DB.
+        // NOTE: if you later add email into JWT, you can remove this DB lookup.
         amount: amountKES,
         reference,
+
         // 'callback_url' can be used but we rely on webhook. Still set to keep user flow.
         callback_url: process.env.PAYSTACK_CALLBACK_URL ?? undefined,
         currency: 'KES',

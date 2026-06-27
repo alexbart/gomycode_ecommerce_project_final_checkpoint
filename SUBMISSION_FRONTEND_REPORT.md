@@ -431,6 +431,24 @@ Admin/client:
 
 ---
 
+## Summary of Major Frontend Processes (15 lines)
+
+1. Set up the React SPA structure and routing in `client/src/App.tsx`.
+2. Implemented typed API clients for customer and admin flows (`client/src/api/*`) using axios and token interceptors.
+3. Built customer JWT authentication + session hydration with `client/src/context/AuthContext.tsx`.
+4. Built admin/vendor role gating with `client/src/context/AdminAuthContext.tsx`.
+5. Protected storefront routes by redirecting unauthenticated users (Auth guards in pages like Cart/Checkout).
+6. Implemented product browsing with URL-driven filters/sorting/pagination (`client/src/pages/ProductsPage.tsx`).
+7. Implemented product details and add-to-cart workflow with quantity + size/color selection (`ProductDetailPage`).
+8. Implemented cart UI actions (remove/update quantity) and order summary calculations (`CartPage`).
+9. Implemented checkout form submission that creates orders and navigates to orders history (`CheckoutPage`).
+10. Implemented order history fetching and status rendering (`OrdersPage`).
+11. Implemented admin login using `AdminLoginPage` and role-aware navigation/layout (`AdminLayout`, `AdminSidebar`).
+12. Implemented admin dashboard stats using `adminAPI.getStats()` with super-admin vs vendor views (`DashboardPage`).
+13. Implemented admin product management CRUD with modal workflows and pending/approved display (`AdminProductsPage`).
+14. Implemented admin order management status updates with dropdown control (`AdminOrdersPage`).
+15. Implemented admin vendor management (add vendor + activate/deactivate) (`AdminVendorsPage`).
+
 ## Conclusion
 
 The EcoMart frontend/client implements a complete end-to-end user experience for a commerce workflow—product browsing, detail viewing, cart management, checkout, and order history—alongside a dedicated admin management interface for dashboard analytics, product administration, order status updates, and vendor management. The design emphasizes typed API contracts, token-based request authentication, role-aware admin gating, and responsive Tailwind-based UI rendering.

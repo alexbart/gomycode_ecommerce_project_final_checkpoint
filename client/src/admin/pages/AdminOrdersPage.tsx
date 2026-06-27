@@ -1,19 +1,10 @@
 import { useState, useEffect } from 'react'
 import { adminAPI, AdminOrder } from '../../api/admin'
-
-function formatKES(amount: number) {
-  try {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      maximumFractionDigits: 2,
-    }).format(amount)
-  } catch {
-    return `KES ${amount}`
-  }
-}
+import { convertUsdToKes, formatKES } from '../../utils/currency'
+import { Link } from 'react-router-dom'
 
 export default function AdminOrdersPage() {
+
   const [orders, setOrders] = useState<AdminOrder[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -25,18 +16,7 @@ export default function AdminOrdersPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  const handleStatusChange = async (orderId: string, status: string) => {
-    try {
-      await adminAPI.updateOrderStatus(orderId, status)
-      setOrders(
-        orders.map((order) =>
-          order._id === orderId ? { ...order, status: status as AdminOrder['status'] } : order
-        )
-      )
-    } catch (err) {
-      console.error(err)
-    }
-  }
+
 
   if (loading) {
     return <p className="text-gray-600">Loading orders...</p>
@@ -61,7 +41,7 @@ export default function AdminOrdersPage() {
             {orders.map((order) => (
               <tr key={order._id}>
                 <td className="px-4 py-3 font-mono text-sm">#{order._id.slice(-6)}</td>
-                <td className="px-4 py-3">{formatKES(order.totalPrice)}</td>
+                <td className="px-4 py-3">{formatKES(convertUsdToKes(order.totalPrice))}</td>
                 <td className="px-4 py-3">
                   <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(order.status)}`}>
                     {order.status}
@@ -69,18 +49,19 @@ export default function AdminOrdersPage() {
                 </td>
                 <td className="px-4 py-3">{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td className="px-4 py-3">
-                  <select
-                    value={order.status}
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                    className="px-2 py-1 border rounded text-sm"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                  <div className="flex items-center gap-3">
+                    <Link to="#" className="text-blue-600 hover:text-blue-800 text-sm">
+                      View
+                    </Link>
+                    <Link to="#" className="text-blue-600 hover:text-blue-800 text-sm">
+                      Edit
+                    </Link>
+                    <Link to="#" className="text-red-600 hover:text-red-800 text-sm">
+                      Delete
+                    </Link>
+                  </div>
                 </td>
+
               </tr>
             ))}
           </tbody>

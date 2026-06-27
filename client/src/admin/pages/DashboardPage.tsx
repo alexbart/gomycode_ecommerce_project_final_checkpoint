@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { adminAPI } from '../../api/admin'
 import { useAdminAuth } from '../../context/AdminAuthContext'
+import { convertUsdToKes, formatKES } from '../../utils/currency'
+import { Link } from 'react-router-dom'
 
 interface Stats {
   totalProducts?: number
@@ -12,17 +14,7 @@ interface Stats {
   totalRevenue?: number
 }
 
-function formatKES(amount: number) {
-  try {
-    return new Intl.NumberFormat('en-KE', {
-      style: 'currency',
-      currency: 'KES',
-      maximumFractionDigits: 2,
-    }).format(amount)
-  } catch {
-    return `KES ${amount}`
-  }
-}
+
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<Stats | null>(null)
@@ -50,13 +42,25 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {isAdmin ? (
           <>
-            <StatsCard title="Total Products" value={stats?.totalProducts || 0} />
-            <StatsCard title="Total Orders" value={stats?.totalOrders || 0} />
-            <StatsCard title="Total Vendors" value={stats?.totalVendors || 0} />
+            <StatsCard
+              title="Total Products"
+              value={stats?.totalProducts || 0}
+              href="/admin/products"
+            />
+            <StatsCard
+              title="Total Orders"
+              value={stats?.totalOrders || 0}
+              href="/admin/orders"
+            />
+            <StatsCard
+              title="Total Vendors"
+              value={stats?.totalVendors || 0}
+              href="/admin/vendors"
+            />
             <StatsCard title="Total Users" value={stats?.totalUsers || 0} />
             <StatsCard
               title="Total Revenue"
-              value={formatKES(stats?.totalRevenue || 0)}
+              value={formatKES(convertUsdToKes(stats?.totalRevenue || 0))}
               className="md:col-span-4"
             />
           </>
@@ -66,7 +70,8 @@ export default function DashboardPage() {
             <StatsCard title="My Orders" value={stats?.myOrders || 0} />
             <StatsCard
               title="Revenue"
-              value={formatKES(stats?.totalRevenue || 0)}
+              value={formatKES(convertUsdToKes(stats?.totalRevenue || 0))}
+
               className="md:col-span-2"
             />
           </>
@@ -80,15 +85,28 @@ function StatsCard({
   title,
   value,
   className = '',
+  href,
 }: {
   title: string
   value: string | number
   className?: string
+  href?: string
 }) {
-  return (
+  const content = (
     <div className={`bg-white p-6 rounded-lg shadow ${className}`}>
       <h3 className="text-sm font-medium text-gray-500 mb-2">{title}</h3>
       <p className="text-3xl font-bold text-gray-900">{value}</p>
     </div>
   )
+
+  if (href) {
+    return (
+      <Link to={href} className="block">
+        {content}
+      </Link>
+    )
+  }
+
+  return content
 }
+
